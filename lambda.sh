@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # List of Lambda function names
-lambda_functions=("CreatePropertyFunction" "DeletePropertyFunction" "GenerateTokenFunction" "GetPropertyFunction" "LoginUserFunction" "RegisterUserFunction" "UpdatePropertyFunction" "VerifyTokenFunction")
+lambda_functions=("CreatePropertyFunction" "DeletePropertyFunction" "GenerateTokenFunction" "GetPropertyFunction" "LoginUserFunction" "RegisterUserFunction" "UpdatePropertyFunction" "VerifyTokenFunction" "OptionsFunction", "BookPropertyFunction" "GetAllPropertiesFunction")
 
 # Remove handler
 rm -rf handlers.zip

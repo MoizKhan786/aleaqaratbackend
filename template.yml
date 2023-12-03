@@ -158,16 +158,13 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: prod
-      # AccessLoggingSetting:
-      # DestinationArn: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/apigateway/3rabon8hd3
-      # Format: $context.identity.sourceIp - - [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId
       DefinitionBody:
         openapi: 3.0.1
         info:
           title: Real Estate API
           version: 1.0.0
         paths:
-          /{proxy+}:  # Add OPTIONS method at the path level for CORS
+          /{proxy+}:
             options:
               responses:
                 '200':
@@ -225,15 +222,20 @@ Resources:
           /book-property:
             post:
               x-amazon-apigateway-integration:
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BookProperty.Arn}/invocations
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BookPropertyFunction.Arn}/invocations
                 passthroughBehavior: when_no_match
                 httpMethod: POST
                 type: aws_proxy
               responses: {}
+              parameters:
+                - name: propertyId
+                  in: query
+                  required: true
+                  type: string
           /get-all-properties:
             get:
               x-amazon-apigateway-integration:
-                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAllProperties.Arn}/invocations
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAllPropertiesFunction.Arn}/invocations
                 passthroughBehavior: when_no_match
                 httpMethod: POST
                 type: aws_proxy
@@ -247,6 +249,19 @@ Resources:
                 httpMethod: POST
                 type: aws_proxy
               responses: {}
+              x-amazon-apigateway-cors:
+                # Add the CORS headers specific to this method
+                headers:
+                  - Content-Type
+                  - X-Amz-Date
+                  - Authorization
+                  - X-Api-Key
+                  - X-Amz-Security-Token
+                  - X-Amz-User-Agent
+                origins:
+                  - '*'  # Adjust this to the specific domains allowed to access the API
+                methods:
+                  - POST
           /register-user:
             post:
               x-amazon-apigateway-integration:

@@ -10,6 +10,9 @@ const {
 
 //use this for login page
 exports.handler = async (event) => {
+
+  console.log(event)
+
   try {
     const credentials = await assumeRole();
 

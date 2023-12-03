@@ -34,6 +34,22 @@ Resources:
       CodeUri: s3://realeastelambdahanldercode/handlers.zip
       FunctionName: GetPropertyFunction
       Role: arn:aws:iam::553435386892:role/LabRole
+  GetAllPropertiesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: getAllProperties.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: GetAllPropertiesFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  BookPropertyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: bookProperty.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: BookPropertyFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
   LoginUserFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -117,6 +133,24 @@ Resources:
       FunctionName:
         Fn::GetAtt:
         - GetPropertyFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
+  GetAllPropertiesFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - GetAllPropertiesFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
+  BookPropertyFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - BookPropertyFunction
         - Arn
       Principal: apigateway.amazonaws.com
   UpdatePropertyFunctionApiGatewayInvokePermission:
@@ -216,6 +250,29 @@ Resources:
                 in: query
                 required: true
                 type: string
+          /book-property:
+            post:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BookPropertyFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+              parameters:
+              - name: propertyId
+                in: query
+                required: true
+                type: string
+          /get-all-properties:
+            get:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAllPropertiesFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
           /login-user:
             post:
               x-amazon-apigateway-integration:
@@ -225,6 +282,18 @@ Resources:
                 httpMethod: POST
                 type: aws_proxy
               responses: {}
+              x-amazon-apigateway-cors:
+                headers:
+                - Content-Type
+                - X-Amz-Date
+                - Authorization
+                - X-Api-Key
+                - X-Amz-Security-Token
+                - X-Amz-User-Agent
+                origins:
+                - '*'
+                methods:
+                - POST
           /register-user:
             post:
               x-amazon-apigateway-integration:

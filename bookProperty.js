@@ -1,6 +1,7 @@
 const { verifyAccessToken } = require("./auth/jwtGeneration");
 const { assumeRole } = require("./auth/assumeLabRole");
 const { getPropertyManagerClient } = require("./client/property");
+const { response_headers } = require('./constants')
 
 exports.handler = async (event) => {
   try {
@@ -26,6 +27,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: response_headers,
       body: JSON.stringify({
         propertyToBook,
         message: "Property Booked successfully",
@@ -36,11 +38,13 @@ exports.handler = async (event) => {
     if (error.message.includes("Invalid token")) {
       return {
         statusCode: 401,
+        headers: response_headers,
         body: JSON.stringify({ error: "Unauthorized - Invalid token" }),
       };
     } else {
       return {
         statusCode: 500,
+        headers: response_headers,
         body: JSON.stringify({ error: "Internal server error" }),
       };
     }
