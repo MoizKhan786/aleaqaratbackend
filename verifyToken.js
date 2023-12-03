@@ -1,6 +1,7 @@
 const {
   verifyAccessToken,
 } = require("./auth/jwtGeneration");
+const { response_headers } = require('./constants');
 
 exports.handler = async (event) => {
   try {

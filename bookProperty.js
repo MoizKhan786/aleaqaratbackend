@@ -5,6 +5,7 @@ const { response_headers } = require('./constants')
 
 exports.handler = async (event) => {
   try {
+
     const authorizationHeader = event.headers["Authorization"];
 
     if (!authorizationHeader) {
@@ -15,16 +16,18 @@ exports.handler = async (event) => {
       };
     }
 
+    const { propertyId } = event.queryStringParameters;
+
     const [, token] = authorizationHeader.split(" ");
     const decodedToken = verifyAccessToken(token);
-    const { propertyID, toDate, fromDate } = JSON.parse(event.body);
+    const { toDate, fromDate } = JSON.parse(event.body);
     const credentials = await assumeRole();
 
     console.log("Assume role successful");
 
     const propertyToBook = await getPropertyManagerClient(
       credentials
-    ).bookProperty(propertyID, toDate, fromDate, decodedToken.email);
+    ).bookProperty(propertyId, toDate, fromDate, decodedToken.email);
 
     return {
       statusCode: 200,
