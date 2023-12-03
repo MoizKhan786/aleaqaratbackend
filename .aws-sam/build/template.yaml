@@ -1,0 +1,228 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: My Serverless App
+Resources:
+  CreatePropertyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: createProperty.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: CreatePropertyFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  DeletePropertyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: deleteProperty.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: DeletePropertyFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  GenerateTokenFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: generateToken.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: GenerateTokenFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  GetPropertyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: getProperty.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: GetPropertyFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  LoginUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: loginUser.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: LoginUserFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  RegisterUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: registerUser.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: RegisterUserFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  UpdatePropertyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: updateProperty.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: UpdatePropertyFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  VerifyTokenFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: verifyToken.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: VerifyTokenFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  LoginUserFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - LoginUserFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
+  RegisterUserFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - RegisterUserFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
+  CreatePropertyFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - CreatePropertyFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
+  DeletePropertyFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - DeletePropertyFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
+  GetPropertyFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - GetPropertyFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
+  UpdatePropertyFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - UpdatePropertyFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
+  VerifyTokenFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - VerifyTokenFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
+  RealEstateAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: Real Estate API
+          version: 1.0.0
+        paths:
+          /create-property:
+            post:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreatePropertyFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+          /delete-property:
+            delete:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DeletePropertyFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+              parameters:
+              - name: propertyId
+                in: query
+                required: true
+                type: string
+          /generate-token:
+            post:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GenerateTokenFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+          /get-property:
+            get:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetPropertyFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+              parameters:
+              - name: propertyId
+                in: query
+                required: true
+                type: string
+          /login-user:
+            post:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoginUserFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+          /register-user:
+            post:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterUserFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+          /update-property:
+            put:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UpdatePropertyFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+              parameters:
+              - name: propertyId
+                in: query
+                required: true
+                type: string
+          /verify-token:
+            post:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VerifyTokenFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
