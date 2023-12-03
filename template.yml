@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: My Serverless App
 
@@ -34,6 +34,22 @@ Resources:
       Runtime: nodejs14.x
       CodeUri: s3://realeastelambdahanldercode/handlers.zip
       FunctionName: GetPropertyFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  GetAllPropertiesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: getAllProperties.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: GetAllPropertiesFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
+  BookPropertyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: bookProperty.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: BookPropertyFunction
       Role: arn:aws:iam::553435386892:role/LabRole
   LoginUserFunction:
     Type: AWS::Serverless::Function
@@ -98,6 +114,18 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt GetPropertyFunction.Arn
       Principal: apigateway.amazonaws.com
+  GetAllPropertiesFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt GetAllPropertiesFunction.Arn
+      Principal: apigateway.amazonaws.com
+  BookPropertyFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt BookPropertyFunction.Arn
+      Principal: apigateway.amazonaws.com
   UpdatePropertyFunctionApiGatewayInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -116,8 +144,8 @@ Resources:
     Properties:
       StageName: prod
       # AccessLoggingSetting:
-        # DestinationArn: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/apigateway/3rabon8hd3
-        # Format: $context.identity.sourceIp - - [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId
+      # DestinationArn: !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/apigateway/3rabon8hd3
+      # Format: $context.identity.sourceIp - - [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId
       DefinitionBody:
         openapi: 3.0.1
         info:
@@ -166,6 +194,23 @@ Resources:
                   in: query
                   required: true
                   type: string
+          /book-property:
+            post:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BookProperty.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+          /get-all-properties:
+            get:
+              x-amazon-apigateway-integration:
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAllProperties.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
+              responses: {}
+
           /login-user:
             post:
               x-amazon-apigateway-integration:

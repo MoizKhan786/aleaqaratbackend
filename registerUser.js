@@ -1,13 +1,12 @@
-const AWS = require('aws-sdk')
+const AWS = require("aws-sdk");
 const bcrypt = require("bcryptjs");
-const { users_table, users_table_index } = require('./constants');
-const { assumeRole } = require('./auth/assumeLabRole');
-const { getDBClient } = require('./client/db')
+const { users_table, users_table_index } = require("./constants");
+const { assumeRole } = require("./auth/assumeLabRole");
+const { getDBClient } = require("./client/db");
 
 //use this for register page
 exports.handler = async (event) => {
   try {
-
     const credentials = await assumeRole();
     const dynamoDB = getDBClient(credentials);
 
@@ -40,30 +39,30 @@ exports.handler = async (event) => {
 };
 
 async function getUserByEmail(dynamoDB, email) {
-    const params = {
-      TableName: users_table,
-      IndexName: users_table_index,
-      KeyConditionExpression: "email = :email",
-      ExpressionAttributeValues: {
-        ":email": email,
-      },
-    };
-  
-    const result = await dynamoDB.query(params).promise();
-  
-    return result.Items.length > 0 ? result.Items[0] : null;
-  }
+  const params = {
+    TableName: users_table,
+    IndexName: users_table_index,
+    KeyConditionExpression: "email = :email",
+    ExpressionAttributeValues: {
+      ":email": email,
+    },
+  };
 
-  async function createUser(dynamoDB, firstName, lastName, email, password) {
-    const params = {
-      TableName: users_table,
-      Item: {
-        firstName,
-        lastName,
-        email,
-        password,
-      },
-    };
-  
-    await dynamoDB.put(params).promise();
-  }
+  const result = await dynamoDB.query(params).promise();
+
+  return result.Items.length > 0 ? result.Items[0] : null;
+}
+
+async function createUser(dynamoDB, firstName, lastName, email, password) {
+  const params = {
+    TableName: users_table,
+    Item: {
+      firstName,
+      lastName,
+      email,
+      password,
+    },
+  };
+
+  await dynamoDB.put(params).promise();
+}

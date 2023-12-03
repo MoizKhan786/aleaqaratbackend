@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 class PropertyManager {
   constructor(config = {}) {
     this.dynamoDB = config.client;
@@ -11,15 +11,19 @@ class PropertyManager {
   }
 
   async createProperty(propertyData, imageFile, email) {
-
-    console.log("propertyData: , imageFile: , email: ", propertyData, imageFile, email)
+    console.log(
+      "propertyData: , imageFile: , email: ",
+      propertyData,
+      imageFile,
+      email
+    );
 
     const propertyId = `${Date.now()}`;
 
     // Upload the image to S3 and get the S3 URL
     const imageKey = await this.uploadImage(propertyId, imageFile);
 
-    console.log("After upload image")
+    console.log("After upload image");
 
     // Actual DynamoDB insert operation
     const params = {
@@ -48,10 +52,9 @@ class PropertyManager {
   }
 
   async updateProperty(propertyId, updatedData, email) {
-
     // Check if the user is the owner of the property
     const property = await this.getPropertyById(propertyId);
-    if (!property){
+    if (!property) {
       throw new Error("Property not found.");
     }
 
@@ -117,11 +120,10 @@ class PropertyManager {
   }
 
   async deleteProperty(propertyId, email) {
-
     // Check if the user is the owner of the property
     const property = await this.getPropertyById(propertyId);
 
-    if (!property){
+    if (!property) {
       throw new Error("Property not found.");
     }
 
@@ -154,8 +156,16 @@ class PropertyManager {
     return result.Item;
   }
 
-  async sendNotification(propertyId, message) {
+  async getAllProperties() {
+    const params = {
+      TableName: this.tableName,
+    };
 
+    const result = await this.dynamoDB.scan(params).promise();
+    return result.Items;
+  }
+
+  async sendNotification(propertyId, message) {
     const params = {
       Message: message,
       TopicArn: this.snsTopicArn,
