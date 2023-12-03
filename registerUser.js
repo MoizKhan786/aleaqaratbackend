@@ -1,8 +1,8 @@
 const AWS = require("aws-sdk");
 const bcrypt = require("bcryptjs");
-const { users_table, users_table_index } = require("./constants");
-const { assumeRole } = require("./auth/assumeLabRole");
-const { getDBClient } = require("./client/db");
+const { users_table, users_table_index, response_headers } = require('./constants');
+const { assumeRole } = require('./auth/assumeLabRole');
+const { getDBClient } = require('./client/db')
 
 //use this for register page
 exports.handler = async (event) => {
@@ -16,6 +16,7 @@ exports.handler = async (event) => {
     if (existingUser) {
       return {
         statusCode: 400,
+        headers: response_headers,
         body: JSON.stringify({ error: "User with this email already exists" }),
       };
     }
@@ -24,8 +25,11 @@ exports.handler = async (event) => {
 
     await createUser(dynamoDB, firstName, lastName, email, hashedPassword);
 
+    console.log("Before successful response")
+
     return {
       statusCode: 200,
+      headers: response_headers,
       body: JSON.stringify({ message: "User registered successfully" }),
     };
   } catch (error) {
@@ -33,6 +37,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 500,
+      headers: response_headers,
       body: JSON.stringify({ event: event, error: "Internal server error" }),
     };
   }

@@ -189,10 +189,6 @@ class PropertyManager {
   }
 
   async bookProperty(propertyId, fromDate, toDate, email) {
-    // Verify the user's JWT token before allowing property booking
-    // if (!token || token.email !== email) {
-    //   throw new Error("Invalid or expired token. User authentication failed.");
-    // }
 
     // Check if the user is the owner of the property
     const property = await this.getPropertyById(propertyId);

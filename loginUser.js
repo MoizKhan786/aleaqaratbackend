@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk')
 const bcrypt = require("bcryptjs");
-const { users_table, users_table_index } = require('./constants');
+const { users_table, users_table_index, response_headers } = require('./constants');
 const {
   generateAccessToken,
 } = require("./auth/jwtGeneration");
@@ -29,6 +29,7 @@ exports.handler = async (event) => {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return {
         statusCode: 401,
+        headers: response_headers,
         body: JSON.stringify({ error: "Invalid email or password" }),
       };
     }
@@ -37,6 +38,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: response_headers,
       body: JSON.stringify({ token }),
     };
   } catch (error) {
@@ -44,6 +46,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 500,
+      headers: response_headers,
       body: JSON.stringify({ error: "Internal server error" }),
     };
   }

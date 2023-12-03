@@ -5,6 +5,7 @@ const {
   assumeRole
 } = require('./auth/assumeLabRole');
 const { getPropertyManagerClient } = require('./client/property');
+const { response_headers } = require('./constants')
 
 exports.handler = async (event) => {
   try {
@@ -13,6 +14,7 @@ exports.handler = async (event) => {
     if (!authorizationHeader) {
       return {
         statusCode: 401,
+        headers: response_headers,
         body: JSON.stringify({ error: "Unauthorized - Missing token" }),
       };
     }
@@ -22,8 +24,6 @@ exports.handler = async (event) => {
     const { propertyData, imageFile } = JSON.parse(event.body);
     const credentials = await assumeRole();
 
-    console.log("Assume role successful");
-
     const propertyId = await getPropertyManagerClient(credentials).createProperty(
       propertyData,
       imageFile,
@@ -32,6 +32,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: response_headers,
       body: JSON.stringify({ propertyId, message: "Property created successfully" }),
     };
   } catch (error) {
@@ -39,11 +40,13 @@ exports.handler = async (event) => {
     if (error.message.includes("Invalid token")) {
       return {
         statusCode: 401,
+        headers: response_headers,
         body: JSON.stringify({ error: "Unauthorized - Invalid token" }),
       };
     } else {
       return {
         statusCode: 500,
+        headers: response_headers,
         body: JSON.stringify({ error: "Internal server error" }),
       };
     }

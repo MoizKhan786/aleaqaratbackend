@@ -11,11 +11,13 @@ exports.handler = async (event) => {
 
       return {
         statusCode: 200,
+        headers: response_headers,
         body: JSON.stringify({ decodedToken }),
       };
     } catch (error) {
       return {
         statusCode: 401,
+        headers: response_headers,
         body: JSON.stringify({ error: "Invalid token" }),
       };
     }
@@ -23,6 +25,7 @@ exports.handler = async (event) => {
     console.error(error);
     return {
       statusCode: 500,
+      headers: response_headers,
       body: JSON.stringify({ error: "Internal server error" }),
     };
   }

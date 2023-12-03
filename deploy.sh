@@ -13,7 +13,7 @@ objects=$(aws s3api list-objects-v2 --bucket realeastelambdahanldercode --query 
 ## Check if there are any objects
 if [ "$(echo $objects | jq length)" -eq "0" ]; then
   echo "No objects found in the bucket."
-  exit 0
+  # exit 0
 fi
 
 ## Loop through and delete each object

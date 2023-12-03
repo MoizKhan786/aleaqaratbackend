@@ -66,6 +66,14 @@ Resources:
       CodeUri: s3://realeastelambdahanldercode/handlers.zip
       FunctionName: VerifyTokenFunction
       Role: arn:aws:iam::553435386892:role/LabRole
+  OptionsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: options.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://realeastelambdahanldercode/handlers.zip
+      FunctionName: OptionsFunction
+      Role: arn:aws:iam::553435386892:role/LabRole
   LoginUserFunctionApiGatewayInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -129,6 +137,15 @@ Resources:
         - VerifyTokenFunction
         - Arn
       Principal: apigateway.amazonaws.com
+  OptionsFunctionApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - OptionsFunction
+        - Arn
+      Principal: apigateway.amazonaws.com
   RealEstateAPI:
     Type: AWS::Serverless::Api
     Properties:
@@ -139,6 +156,20 @@ Resources:
           title: Real Estate API
           version: 1.0.0
         paths:
+          /{proxy+}:
+            options:
+              responses:
+                '200':
+                  description: 200 response
+                  content:
+                    application/json:
+                      example: {}
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${OptionsFunction.Arn}/invocations
+                passthroughBehavior: when_no_match
+                httpMethod: POST
+                type: aws_proxy
           /create-property:
             post:
               x-amazon-apigateway-integration:
@@ -203,6 +234,18 @@ Resources:
                 httpMethod: POST
                 type: aws_proxy
               responses: {}
+              x-amazon-apigateway-cors:
+                headers:
+                - Content-Type
+                - X-Amz-Date
+                - Authorization
+                - X-Api-Key
+                - X-Amz-Security-Token
+                - X-Amz-User-Agent
+                origins:
+                - '*'
+                methods:
+                - POST
           /update-property:
             put:
               x-amazon-apigateway-integration:
