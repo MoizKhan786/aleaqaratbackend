@@ -10,6 +10,7 @@ exports.handler = async (event) => {
     if (!authorizationHeader) {
       return {
         statusCode: 401,
+        headers: response_headers,
         body: JSON.stringify({ error: "Unauthorized - Missing token" }),
       };
     }
