@@ -207,7 +207,7 @@ class PropertyManager {
 
     // Check if the property is already booked for the specified dates
     if (property.isBooked) {
-      const existingBookingConflict = checkBookingConflict(
+      const existingBookingConflict = this.checkBookingConflict(
         property,
         fromDate,
         toDate
@@ -249,7 +249,7 @@ class PropertyManager {
     const params = {
       Bucket: bucketName,
       Key: key,
-      Body: imageFile.data,
+      Body: Buffer.from(imageFile.data, 'base64'),
       ContentType: imageFile.mimetype,
     };
 

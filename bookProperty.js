@@ -27,7 +27,7 @@ exports.handler = async (event) => {
 
     const propertyToBook = await getPropertyManagerClient(
       credentials
-    ).bookProperty(propertyId, toDate, fromDate, decodedToken.email);
+    ).bookProperty(propertyId, fromDate, toDate, decodedToken.email);
 
     return {
       statusCode: 200,
@@ -49,7 +49,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 500,
         headers: response_headers,
-        body: JSON.stringify({ error: "Internal server error" }),
+        body: JSON.stringify({ error: error.message }),
       };
     }
   }
