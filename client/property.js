@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk')
 const { getDBClient } = require('./db')
-const PropertyManager = require("../PropertyManager");
+const PropertyManager = require("property-manager-for-aws");
 const { property_table, property_image_bucket, sns_topic } = require('../constants')
 
 // Function to create property client using s3, sns and ddb client
