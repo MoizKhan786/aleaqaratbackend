@@ -7,6 +7,7 @@ const {
 const { getPropertyManagerClient } = require('./client/property')
 const { response_headers } = require('./constants')
 
+// This handler is used to fetch a given property.
 exports.handler = async (event) => {
 
   console.info(event);

@@ -7,6 +7,7 @@ const {
 const { getPropertyManagerClient } = require('./client/property');
 const { response_headers } = require('./constants')
 
+// This lambda handler is used to create the property for sale/rent
 exports.handler = async (event) => {
   try {
     const authorizationHeader = event.headers["Authorization"];

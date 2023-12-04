@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Usage sh single_lambda.sh. This file helps to deploy a all lambda function
+
 # List of Lambda function names
 lambda_functions=("CreatePropertyFunction" "DeletePropertyFunction" "GenerateTokenFunction" "GetPropertyFunction" "LoginUserFunction" "RegisterUserFunction" "UpdatePropertyFunction" "VerifyTokenFunction" "OptionsFunction", "BookPropertyFunction" "GetAllPropertiesFunction")
 

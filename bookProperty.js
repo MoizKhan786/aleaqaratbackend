@@ -3,6 +3,7 @@ const { assumeRole } = require("./auth/assumeLabRole");
 const { getPropertyManagerClient } = require("./client/property");
 const { response_headers } = require('./constants')
 
+// This lambda handler is used to book the rented property
 exports.handler = async (event) => {
   try {
 

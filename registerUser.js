@@ -4,7 +4,7 @@ const { users_table, users_table_index, response_headers } = require('./constant
 const { assumeRole } = require('./auth/assumeLabRole');
 const { getDBClient } = require('./client/db')
 
-//use this for register page
+// This handler is used to register a user. For existing user appropriate message will be shown
 exports.handler = async (event) => {
   try {
     const credentials = await assumeRole();

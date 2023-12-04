@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Usage sh deploy.sh. This file helps to upload the code to s3 and deploys lambda and apigateway.
+
 # SAM build
 sam build
 

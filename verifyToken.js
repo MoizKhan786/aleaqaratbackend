@@ -3,6 +3,7 @@ const {
 } = require("./auth/jwtGeneration");
 const { response_headers } = require('./constants');
 
+// This handler is used to verify a given token
 exports.handler = async (event) => {
   try {
     const { token } = event;

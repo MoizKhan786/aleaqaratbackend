@@ -3,6 +3,7 @@ const { assumeRole } = require("./auth/assumeLabRole");
 const { getPropertyManagerClient } = require("./client/property");
 const { response_headers } = require('./constants')
 
+// This handler is used to fetch all the properties
 exports.handler = async (event) => {
   console.info(event);
   try {

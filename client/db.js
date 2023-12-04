@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk')
 
+// Function to created DDB client using users credentials
 const getDBClient = (credentials) => {
     const dbClient = new AWS.DynamoDB.DocumentClient({
         accessKeyId: credentials.AccessKeyId,

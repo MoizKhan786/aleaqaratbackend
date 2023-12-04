@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk')
 
+// This function helps to assume a labRole
 const assumeRole = async () => {
     const sts = new AWS.STS({region: "us-east-1"});
   

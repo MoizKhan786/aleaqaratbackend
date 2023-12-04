@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Usage sh single_lambda.sh. This file helps to deploy a sigle lambda function
+
 # function_name="CreatePropertyFunction"
 # function_name="DeletePropertyFunction"
 # function_name="GenerateTokenFunction"

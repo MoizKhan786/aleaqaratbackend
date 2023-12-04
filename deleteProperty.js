@@ -7,6 +7,8 @@ const {
 const { getPropertyManagerClient } = require('./client/property')
 const { response_headers } = require('./constants')
 
+// This lambda handler is used to delete the property.
+// Property not found message is thrown when someone tries to delete the property and it doesn't exist
 exports.handler = async (event) => {
   try {
     const { propertyId } = event.queryStringParameters;
